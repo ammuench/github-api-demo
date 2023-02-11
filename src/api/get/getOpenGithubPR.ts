@@ -18,25 +18,37 @@ const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRe
 
   const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=100`);
   const { headers, data } = res;
-  let prData = [...data];
+  const prData = [...data];
   const paginationInfo = parseGithubPagination(headers.link);
-  if(paginationInfo.next) {
-    prData = await getPaginatedPRs(paginationInfo.next, prData);
+  if(paginationInfo.next && paginationInfo.last) {
+    const regexMatch = paginationInfo.last.match(/^(.+&page=)(\d+)$/);
+
+    if (regexMatch) {
+      const URL_STUB_IDX = 1;
+      const TOTAL_PAGES_IDX = 2;
+      const paginationUrlStub = regexMatch[URL_STUB_IDX];
+      const totalPages = parseInt(regexMatch[TOTAL_PAGES_IDX], 10);
+
+      const paginatedAPICalls: Promise<GithubApiSimplePullRequest[]>[] = [];
+      
+      for (let currentPage = 2; currentPage <= totalPages; currentPage++) {
+        paginatedAPICalls.push(getOpenPRPage(`${paginationUrlStub}${currentPage}`));
+      }
+
+      const paginatedData = await Promise.all(paginatedAPICalls);
+      paginatedData.forEach((dataPage) => {
+        prData.push(...dataPage);
+      });
+    }
+
   }
 
   return prData;
 };
 
-const getPaginatedPRs = async (nextPageUrl: string, currentData: GithubApiSimplePullRequest[] ): Promise<GithubApiSimplePullRequest[]> => {
-  const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/${nextPageUrl}`);
-  const { headers, data } = res;
-  let updatedPRData = [...currentData, ...data];
-  const paginationInfo = parseGithubPagination(headers.link);
-  if (paginationInfo.next) {
-    updatedPRData = await getPaginatedPRs(paginationInfo.next, updatedPRData);
-  }
-
-  return updatedPRData;
+const getOpenPRPage = async (pageinationPRUrl: string): Promise<GithubApiSimplePullRequest[]> => {
+  const paginationDataCall = await githubApi.get<GithubApiSimplePullRequest[]>(`/${pageinationPRUrl}`);
+  return paginationDataCall.data;
 };
 
 export default getOpenGithubPRs;
