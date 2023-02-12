@@ -36,7 +36,7 @@ const getPRCommitCount = async (prCommitURL: string): Promise<number | string> =
   } catch (e: any) {
     /* 
      * Github's API limit can be hit on repos with large amounts of PRs open
-     * when we have to call 1-2 additional calls on each PR for commit length (like reactjs/reactjs.org for example).
+     * when we have to call additional calls on each PR for commit length (like reactjs/reactjs.org for example).
      * So here we wait out their retry-after header plus 1 ms and process the call again until we hit it again.
      * 
      * If we hit multiple errors after waiting throw an error b/c the API has probably locked us out for an amount of
@@ -46,9 +46,10 @@ const getPRCommitCount = async (prCommitURL: string): Promise<number | string> =
       await new Promise(r => setTimeout(r, ((e.response.headers["retry-after"] * 1000) + 1)));
       return await getPRCommitCount(prCommitURL);
     }
-  }
 
-  return "Unknown";
+    console.error(e);
+    throw new Error(e);
+  }
 };
 
 

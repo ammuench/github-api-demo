@@ -38,6 +38,11 @@ const generateMockPRAPIData = (amt: number): GithubApiSimplePullRequest[] => {
 };
 
 describe("# getOpenGithubPRs api/get method", () => {
+  afterEach(() => {
+    // Clear counts on api mock
+    jest.clearAllMocks();
+  });
+
   it("should exist", () => {
     expect(getOpenGithubPRs).toBeTruthy();
   });
@@ -111,5 +116,6 @@ describe("# getOpenGithubPRs api/get method", () => {
     const TEST_RESULT = await getOpenGithubPRs(TEST_REPO_NAME);
 
     expect(TEST_RESULT).toEqual(EXPECTED_RESULT);
+    expect(githubApi.get).toHaveBeenCalledTimes(2);
   });
 });
