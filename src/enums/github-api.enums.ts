@@ -8,3 +8,5 @@ export enum GithubApiAuthorAssociation {
   NONE = "NONE",
   OWNER = "OWNER",
 }
+
+export const MAX_API_PAGE_SIZE = 100;

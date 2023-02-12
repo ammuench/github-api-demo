@@ -1,8 +1,12 @@
-import githubApi from "../apiBase";
-import { GithubApiSimplePullRequest } from "../../types/github-api.types";
-import { GITHUB_API_ERROR_MESSAGES } from "../../enums/github-api-error-messages.enums";
-import parseGithubPagination from "../../utils/parseGithubPagination";
 import getPaginationCall from "./getPaginationCall";
+
+import githubApi from "../apiBase";
+
+import { MAX_API_PAGE_SIZE } from "../../enums/github-api.enums";
+import { GITHUB_API_ERROR_MESSAGES } from "../../enums/github-api-error-messages.enums";
+import { GithubApiSimplePullRequest } from "../../types/github-api.types";
+import parseGithubPagination from "../../utils/parseGithubPagination";
+import parsePaginationLastLink from "../../utils/parsePaginationLastLink";
 
 /**
  * Fetches open PRs in given github repo
@@ -17,36 +21,37 @@ const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRe
     throw new Error(GITHUB_API_ERROR_MESSAGES.INVALID_REPO_NAME);
   }
 
-  const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=100`);
-  const { headers, data } = res;
-  const prData = [...data];
-  const paginationInfo = parseGithubPagination(headers.link);
-  if(paginationInfo.next && paginationInfo.last) {
-    const regexMatch = paginationInfo.last.match(/^(.+&page=)(\d+)$/);
+  try {
+    const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=${MAX_API_PAGE_SIZE}`);
+    const { headers, data } = res;
+    const prData = [...data];
+    const paginationInfo = parseGithubPagination(headers.link);
 
-    if (regexMatch) {
-      const URL_STUB_IDX = 1;
-      const TOTAL_PAGES_IDX = 2;
-      const paginationUrlStub = regexMatch[URL_STUB_IDX];
-      const totalPages = parseInt(regexMatch[TOTAL_PAGES_IDX], 10);
+    if (paginationInfo.next && paginationInfo.last) {
+      const lastPageInfo = parsePaginationLastLink(paginationInfo.last);
 
-      const paginatedAPICalls: Promise<GithubApiSimplePullRequest[]>[] = [];
-      
-      for (let currentPage = 2; currentPage <= totalPages; currentPage++) {
-        paginatedAPICalls.push(
-          getPaginationCall<GithubApiSimplePullRequest[]>(`${paginationUrlStub}${currentPage}`)
-        );
+      if (lastPageInfo) {
+        const paginatedAPICalls: Promise<GithubApiSimplePullRequest[]>[] = [];
+
+        for (let currentPage = 2; currentPage <= lastPageInfo.totalPages; currentPage++) {
+          paginatedAPICalls.push(
+            getPaginationCall<GithubApiSimplePullRequest[]>(`${lastPageInfo.paginationUrlStub}${currentPage}`)
+          );
+        }
+
+        const paginatedData = await Promise.all(paginatedAPICalls);
+        paginatedData.forEach((dataPage) => {
+          prData.push(...dataPage);
+        });
       }
 
-      const paginatedData = await Promise.all(paginatedAPICalls);
-      paginatedData.forEach((dataPage) => {
-        prData.push(...dataPage);
-      });
     }
 
+    return prData;
+  } catch (e: any) {
+    console.error(e);
+    throw new Error(e.response.message);
   }
-
-  return prData;
 };
 
 export default getOpenGithubPRs;
