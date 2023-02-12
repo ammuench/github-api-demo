@@ -2,6 +2,7 @@ import githubApi from "../apiBase";
 import { GithubApiSimplePullRequest } from "../../types/github-api.types";
 import { GITHUB_API_ERROR_MESSAGES } from "../../enums/github-api-error-messages.enums";
 import parseGithubPagination from "../../utils/parseGithubPagination";
+import getPaginationCall from "./getPaginationCall";
 
 /**
  * Fetches open PRs in given github repo
@@ -32,7 +33,9 @@ const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRe
       const paginatedAPICalls: Promise<GithubApiSimplePullRequest[]>[] = [];
       
       for (let currentPage = 2; currentPage <= totalPages; currentPage++) {
-        paginatedAPICalls.push(getOpenPRPage(`${paginationUrlStub}${currentPage}`));
+        paginatedAPICalls.push(
+          getPaginationCall<GithubApiSimplePullRequest[]>(`${paginationUrlStub}${currentPage}`)
+        );
       }
 
       const paginatedData = await Promise.all(paginatedAPICalls);
@@ -44,11 +47,6 @@ const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRe
   }
 
   return prData;
-};
-
-const getOpenPRPage = async (pageinationPRUrl: string): Promise<GithubApiSimplePullRequest[]> => {
-  const paginationDataCall = await githubApi.get<GithubApiSimplePullRequest[]>(`/${pageinationPRUrl}`);
-  return paginationDataCall.data;
 };
 
 export default getOpenGithubPRs;
