@@ -10,7 +10,7 @@ const parseGithubPagination = (paginationLinkVal: string = ""): GithubPagination
 
   const parsedPaginationData: GithubPaginationData = {
   };
-  
+
   paginationItems.forEach((pageItem) => {
     const matchPaginationUrl = pageItem.match(/https:\/\/api.github.com\/(.+)\>;/);
     const matchPaginationDirection = pageItem.match(/rel="(first|prev|next|last)"/);

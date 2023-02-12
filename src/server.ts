@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 
 // Router Imports
-import pullRequestRoutes from "./routes/pullRequests";
+import pullRequestRoutes from "./routes/pullRequestsRoutes";
 
 // Check for token
 dotenv.config();

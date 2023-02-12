@@ -13,3 +13,5 @@ const getPaginationCall = async <T>(paginationURL: string): Promise<T> => {
 
 
 export default getPaginationCall;
+
+

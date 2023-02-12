@@ -21,7 +21,7 @@ const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRe
     throw new Error(GITHUB_API_ERROR_MESSAGES.INVALID_REPO_NAME);
   }
 
-  const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=${MAX_API_PAGE_SIZE}`);
+  const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=${MAX_API_PAGE_SIZE}&state=open`);
   const { headers, data } = res;
   const prData = [...data];
   const paginationInfo = parseGithubPagination(headers.link);
