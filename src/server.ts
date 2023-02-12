@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 
 // Router Imports
-import IndexRoutes from "./routes/index";
+import pullRequestRoutes from "./routes/pullRequests";
 
 // Check for token
 dotenv.config();
@@ -14,8 +14,13 @@ if (!process.env.GITHUB_ACCESS_TOKEN) {
 const app = express();
 const port = 3000;
 
+app.all("/", (req, res) => {
+  res.json({
+    message: "Hey!  The API you probably want is at /pull-requests/:author/:repo-name",
+  });
+});
 
-app.use("/pull-requests", IndexRoutes);
+app.use("/pull-requests", pullRequestRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

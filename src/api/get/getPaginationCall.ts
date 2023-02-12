@@ -11,5 +11,5 @@ const getPaginationCall = async <T>(paginationURL: string): Promise<T> => {
   return paginationDataCall.data;
 };
 
-  
+
 export default getPaginationCall;

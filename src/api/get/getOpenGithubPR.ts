@@ -21,37 +21,33 @@ const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRe
     throw new Error(GITHUB_API_ERROR_MESSAGES.INVALID_REPO_NAME);
   }
 
-  try {
-    const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=${MAX_API_PAGE_SIZE}`);
-    const { headers, data } = res;
-    const prData = [...data];
-    const paginationInfo = parseGithubPagination(headers.link);
+  const res = await githubApi.get<GithubApiSimplePullRequest[]>(`/repos/${repoPath}/pulls?per_page=${MAX_API_PAGE_SIZE}`);
+  const { headers, data } = res;
+  const prData = [...data];
+  const paginationInfo = parseGithubPagination(headers.link);
 
-    if (paginationInfo.next && paginationInfo.last) {
-      const lastPageInfo = parsePaginationLastLink(paginationInfo.last);
+  if (paginationInfo.next && paginationInfo.last) {
+    const lastPageInfo = parsePaginationLastLink(paginationInfo.last);
 
-      if (lastPageInfo) {
-        const paginatedAPICalls: Promise<GithubApiSimplePullRequest[]>[] = [];
+    if (lastPageInfo) {
+      const paginatedAPICalls: Promise<GithubApiSimplePullRequest[]>[] = [];
 
-        for (let currentPage = 2; currentPage <= lastPageInfo.totalPages; currentPage++) {
-          paginatedAPICalls.push(
-            getPaginationCall<GithubApiSimplePullRequest[]>(`${lastPageInfo.paginationUrlStub}${currentPage}`)
-          );
-        }
-
-        const paginatedData = await Promise.all(paginatedAPICalls);
-        paginatedData.forEach((dataPage) => {
-          prData.push(...dataPage);
-        });
+      for (let currentPage = 2; currentPage <= lastPageInfo.totalPages; currentPage++) {
+        paginatedAPICalls.push(
+          getPaginationCall<GithubApiSimplePullRequest[]>(`${lastPageInfo.paginationUrlStub}${currentPage}`)
+        );
       }
 
+      const paginatedData = await Promise.all(paginatedAPICalls);
+      paginatedData.forEach((dataPage) => {
+        prData.push(...dataPage);
+      });
     }
 
-    return prData;
-  } catch (e: any) {
-    console.error(e);
-    throw new Error(e.response.message);
   }
+
+  return prData;
+
 };
 
 export default getOpenGithubPRs;

@@ -22,20 +22,35 @@ const getPRCommitCount = async (prCommitURL: string): Promise<number | string> =
   const URL_STUB_IDX = 1;
   const stubUrlForApiCall = prCommitUrlStubRegex[URL_STUB_IDX];
 
-  const { headers, data } = await githubApi.get<GithubAPICommit[]>(`${stubUrlForApiCall}?per_page=${MAX_API_PAGE_SIZE}`);
+  try {
+    const { headers, data } = await githubApi.get<GithubAPICommit[]>(`${stubUrlForApiCall}?per_page=${MAX_API_PAGE_SIZE}`);
 
-  if (data.length <= MAX_API_PAGE_SIZE) {
-    return data.length;
-  }
+    if (data.length <= MAX_API_PAGE_SIZE) {
+      return data.length;
+    }
 
-  const paginationInfo = parseGithubPagination(headers.link);
-  const lastPageInfo = parsePaginationLastLink(paginationInfo.last ?? "");
+    const paginationInfo = parseGithubPagination(headers.link);
+    const lastPageInfo = parsePaginationLastLink(paginationInfo.last ?? "");
 
-  if (lastPageInfo) {
-    const lastPageCommitsCall = await githubApi.get<GithubAPICommit[]>(`/${lastPageInfo.paginationUrlStub}${lastPageInfo.totalPages}`);
-    const lastPageLength = lastPageCommitsCall.data.length;
-    const totalCommits = (lastPageInfo.totalPages - 1 * MAX_API_PAGE_SIZE) + lastPageLength;
-    return totalCommits;
+    if (lastPageInfo) {
+      const lastPageCommitsCall = await githubApi.get<GithubAPICommit[]>(`/${lastPageInfo.paginationUrlStub}${lastPageInfo.totalPages}`);
+      const lastPageLength = lastPageCommitsCall.data.length;
+      const totalCommits = (lastPageInfo.totalPages - 1 * MAX_API_PAGE_SIZE) + lastPageLength;
+      return totalCommits;
+    }
+  } catch (e: any) {
+    /* 
+     * Github's API limit can be hit on repos with large amounts of PRs open
+     * when we have to call 1-2 additional calls on each PR for commit length (like reactjs/reactjs.org for example).
+     * So here we wait out their retry-after header plus 1 ms and process the call again until we hit it again.
+     * 
+     * If we hit multiple errors after waiting throw an error b/c the API has probably locked us out for an amount of
+     * time that will grow the more we hit it
+     */
+    if (e?.response?.headers && e.response.headers["retry-after"]) {
+      await new Promise(r => setTimeout(r, ((e.response.headers["retry-after"] * 1000) + 1)));
+      return await getPRCommitCount(prCommitURL);
+    }
   }
 
   return "Unknown";
