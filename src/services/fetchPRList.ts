@@ -1,7 +1,7 @@
 import getOpenGithubPRs from "../api/get/getOpenGithubPR";
 import getPRCommitCount from "../api/get/getPRCommitCount";
 
-interface PullRequestList {
+export interface PullRequestList {
   id: number;
   number: number;
   title: string;

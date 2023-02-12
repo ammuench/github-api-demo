@@ -116,6 +116,8 @@ describe("# getPRCommitCount api/get method", () => {
     expect(TEST_RESULT).toBe(EXPECTED_VALUE);
   });
   it("should not retry if a non-retry error is thrown", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn(); // Suppress console.error logs from output
     const EXPECTED_ERR = faker.random.words();
     const TEST_URL = `https://api.github.com/repos/${faker.internet.userName()}/${faker.random.word()}/pulls/${faker.random.numeric(2)}/commits`;
 
@@ -125,7 +127,7 @@ describe("# getPRCommitCount api/get method", () => {
     try {
       await getPRCommitCount(TEST_URL);
     } catch (e: any) {
-
+      console.error = consoleError;
       expect(githubApi.get).toHaveBeenCalledTimes(1);
       expect(e.message).toEqual(EXPECTED_ERR);
     }
