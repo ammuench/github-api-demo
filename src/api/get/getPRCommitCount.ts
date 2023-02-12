@@ -1,6 +1,5 @@
 import githubApi from "../apiBase";
 
-import { MAX_API_PAGE_SIZE } from "../../enums/github-api.enums";
 import { GithubAPICommit } from "../../types/github-api.types";
 import parseGithubPagination from "../../utils/parseGithubPagination";
 import parsePaginationLastLink from "../../utils/parsePaginationLastLink";
@@ -23,21 +22,17 @@ const getPRCommitCount = async (prCommitURL: string): Promise<number | string> =
   const stubUrlForApiCall = prCommitUrlStubRegex[URL_STUB_IDX];
 
   try {
-    const { headers, data } = await githubApi.get<GithubAPICommit[]>(`${stubUrlForApiCall}?per_page=${MAX_API_PAGE_SIZE}`);
-
-    if (data.length <= MAX_API_PAGE_SIZE) {
-      return data.length;
-    }
+    const { headers } = await githubApi.get<GithubAPICommit[]>(`${stubUrlForApiCall}?per_page=1`);
 
     const paginationInfo = parseGithubPagination(headers.link);
     const lastPageInfo = parsePaginationLastLink(paginationInfo.last ?? "");
 
-    if (lastPageInfo) {
-      const lastPageCommitsCall = await githubApi.get<GithubAPICommit[]>(`/${lastPageInfo.paginationUrlStub}${lastPageInfo.totalPages}`);
-      const lastPageLength = lastPageCommitsCall.data.length;
-      const totalCommits = (lastPageInfo.totalPages - 1 * MAX_API_PAGE_SIZE) + lastPageLength;
-      return totalCommits;
+    if (!lastPageInfo) {
+      return 1;
     }
+
+    return lastPageInfo.totalPages;
+
   } catch (e: any) {
     /* 
      * Github's API limit can be hit on repos with large amounts of PRs open
