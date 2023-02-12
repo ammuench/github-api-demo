@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "./dist/server.js",
-    "build": "tsc --build",
+    "build": "tsc --project tsconfig.build.json",
     "watch": "nodemon --watch 'src/**' --ext 'ts,json' --ignore 'src/**/*.spec.ts' --exec 'ts-node src/server.ts'",
     "test": "jest",
     "test:coverage": "jest --coverage",
