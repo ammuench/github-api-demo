@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1228984079,
+    "number": 70,
+    "title": "Bump http-cache-semantics from 4.1.0 to 4.1.1",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1189546863,
+    "number": 69,
+    "title": "Bump json5 from 1.0.1 to 1.0.2",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1182413875,
+    "number": 68,
+    "title": "Bump json5 and @angular-devkit/build-angular",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1167322285,
+    "number": 67,
+    "title": "Bump express from 4.17.2 to 4.18.2",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1153810450,
+    "number": 66,
+    "title": "Bump decode-uri-component from 0.2.0 to 0.2.2",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1150637514,
+    "number": 65,
+    "title": "Bump qs and express",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1123540971,
+    "number": 64,
+    "title": "Bump loader-utils from 1.4.0 to 1.4.2",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1045843359,
+    "number": 62,
+    "title": "Bump node-forge and @angular-devkit/build-angular",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 1045838363,
+    "number": 61,
+    "title": "Bump terser and @angular-devkit/build-angular",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 924225286,
+    "number": 59,
+    "title": "Bump async from 2.6.3 to 2.6.4",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  },
+  {
+    "id": 897682516,
+    "number": 58,
+    "title": "Bump minimist from 1.2.5 to 1.2.6",
+    "author": "dependabot[bot]",
+    "commit_count": 1
+  }
+]
