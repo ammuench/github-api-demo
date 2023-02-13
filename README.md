@@ -1,6 +1,6 @@
 # github-api-demo
 
-A standalone API that opens a GET endpoint at `http://localhost:3000/pull/request/:user/:reponame` that returns all data about PRs for a given repository in the following format
+A standalone API that opens a GET endpoint at `http://localhost:3000/pull-requests/:user/:reponame` that returns all data about PRs for a given repository in the following format
 
 ```js
 [
