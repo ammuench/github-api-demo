@@ -9,6 +9,13 @@ export interface PullRequestList {
   commit_count: number | string;
 }
 
+
+/**
+ * Breaks the `last` value of a pagination object into a easy-to-read object
+ *
+ * @param {string} repoPath Link for `last` page URL
+ * @return {Promise<PullRequestList[]>} Returns parsed object or null is string cannot be parsed
+ */
 const fetchPRList = async (repoPath: string): Promise<PullRequestList[]> => {
   const rawPRData = await getOpenGithubPRs(repoPath);
   const formattedPRData = rawPRData.map(async (rawPR) => {

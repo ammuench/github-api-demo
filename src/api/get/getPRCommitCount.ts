@@ -9,7 +9,7 @@ import { GITHUB_API_ERROR_MESSAGES } from "../../enums/github-api-error-messages
  * Gets count of commits in a PR
  *
  * @param {string} prCommitURL URL from PR to fetch it's commits
- * @return {*}  {Promise<T>}
+ * @return {Promise<T>}  {Promise<T>}
  */
 const getPRCommitCount = async (prCommitURL: string): Promise<number | string> => {
   const prCommitUrlStubRegex = prCommitURL.match(/^https:\/\/api.github.com(.+)$/);

@@ -7,7 +7,7 @@ import pullRequestRoutes from "./routes/pullRequestsRoutes";
 // Check for token
 dotenv.config();
 if (!process.env.GITHUB_ACCESS_TOKEN) {
-  throw new Error("No Github Access Token Provided in process.env file");
+  throw new Error("No GITHUB_ACCESS_TOKEN Provided in .env file");
 }
 
 

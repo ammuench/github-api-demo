@@ -4,7 +4,7 @@ import githubApi from "../apiBase";
  * Helper method to get data from direct pagination URL call
  *
  * @param {string} paginationURL URL with pagination value supplied
- * @return {*}  {Promise<T>}
+ * @return {Promise<T>}  {Promise<T>}
  */
 const getPaginationCall = async <T>(paginationURL: string): Promise<T> => {
   const paginationDataCall = await githubApi.get<T>(`/${paginationURL}`);

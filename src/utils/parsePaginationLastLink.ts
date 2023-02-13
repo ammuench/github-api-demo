@@ -3,6 +3,12 @@ interface LastPageData {
   totalPages: number;
 }
 
+/**
+ * Breaks the `last` value of a pagination object into a easy-to-read object
+ *
+ * @param {string} paginationLink Link for `last` page URL
+ * @return {LastPageData | null}  {LastPageData | null} Returns parsed object or null is string cannot be parsed
+ */
 const parsePaginationLastLink = (paginationLink: string): LastPageData | null => {
   const regexMatch = paginationLink.match(/^(.+&page=)(\d+)$/);
 

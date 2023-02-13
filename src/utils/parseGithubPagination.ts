@@ -5,6 +5,12 @@ interface GithubPaginationData {
   last?: string;
 }
 
+/**
+ * Breaks the `last` value of a pagination object into a easy-to-read object
+ *
+ * @param {string} paginationLinkVal String value from header.link that contains all possible pagination links with corresponding rels
+ * @return {GithubPaginationData} {GithubPaginationData} Returns object that contains any parseable header.link values
+ */
 const parseGithubPagination = (paginationLinkVal: string = ""): GithubPaginationData => {
   const paginationItems = paginationLinkVal.split(",");
 

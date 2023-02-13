@@ -12,7 +12,7 @@ import parsePaginationLastLink from "../../utils/parsePaginationLastLink";
  * Fetches open PRs in given github repo
  *
  * @param {string} repoPath Repository name in format `<AUTHOR>/<REPONAME>`
- * @return {*}  {Promise<AxiosResponse<GithubApiSimplePullRequest>>}
+ * @return {Promise<AxiosResponse<GithubApiSimplePullRequest>>}  {Promise<AxiosResponse<GithubApiSimplePullRequest>>}
  */
 const getOpenGithubPRs = async (repoPath: string): Promise<GithubApiSimplePullRequest[]> => {
   const repoMatch = repoPath.match(/^[\w|\d|-]+\/[\w|\d|\-|\.|_]+$/);

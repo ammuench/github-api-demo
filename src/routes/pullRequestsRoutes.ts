@@ -27,11 +27,6 @@ router.get("/:author/:repo", async (req, res) => {
       return;
     }
 
-    console.log({
-      label: "ERROR",
-      e,
-    });
-
     res.status(500).send({
       message: e?.message || "Internal Server Error",
     });
