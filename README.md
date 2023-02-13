@@ -1,31 +1,31 @@
 # github-api-demo
 
-A standalone API that opens a GET endpoint at `http://localhost:3000/pull/request/:user/:reponame` that returns data in the following format
+A standalone API that opens a GET endpoint at `http://localhost:3000/pull/request/:user/:reponame` that returns all data about PRs for a given repository in the following format
 
 ```js
 [
- {
-  id: 1,
-  number: 100,
-  title: "Tile of Pull Request 1",
-  author: "Author of Pull Request 1",
-  commit_count: 8
- },
- {
-  id: 2,
-  number: 101,
-  title: "Tile of Pull Request 2",
-  author: "Author of Pull Request 2",
-  commit_count: 4
- },
- {
-  id: 3,
-  number: 102,
-  title: "Tile of Pull Request 3",
-  author: "Author of Pull Request 3",
-  commit_count: 12
- }
-]
+  {
+    id: 1,
+    number: 100,
+    title: "Tile of Pull Request 1",
+    author: "Author of Pull Request 1",
+    commit_count: 8,
+  },
+  {
+    id: 2,
+    number: 101,
+    title: "Tile of Pull Request 2",
+    author: "Author of Pull Request 2",
+    commit_count: 4,
+  },
+  {
+    id: 3,
+    number: 102,
+    title: "Tile of Pull Request 3",
+    author: "Author of Pull Request 3",
+    commit_count: 12,
+  },
+];
 ```
 
 ## Installation
